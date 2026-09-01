@@ -90,3 +90,24 @@ The client explicitly chose heavy animation knowing the trust/performance trade-
 3. **`prefers-reduced-motion` is mandatory, not optional.** Every GSAP timeline and every Framer Motion variant checks this and substitutes an instant/near-instant transition when it's set. This is an accessibility requirement, not a style choice — do not skip it to save time.
 4. **Performance budget:** Lighthouse mobile performance score ≥ 80 on the homepage, even with the entry sequence. Use `next/image` for every image, lazy-load below-the-fold sections, and keep the entry sequence's asset weight under ~500KB. If a design idea can't hit this budget, simplify the idea — don't blow the budget.
 5. **Case study detail pages get lighter treatment than the homepage.** A client re-reading a case study to make a decision should not be fighting animation to read text. Scroll reveals on section-enter are fine; don't animate body copy itself.
+
+## Coding conventions
+
+- Components are function components, named exports, colocated types
+- No `any` — this is TypeScript strict mode, treat type errors as build blockers, not warnings to suppress
+- Motion variants live in `/lib/motion.ts` and are imported, never redefined inline per component
+- Each case study page must render correctly with zero motion (reduced-motion path) — if it doesn't make sense with animation stripped, the content structure is wrong, fix the structure not the animation
+
+## Commands
+
+- `npm run dev` — local dev
+- `npm run build` — production build, must pass with zero TS errors before considering a phase "done"
+- `npm run lint` — must pass before considering a phase "done"
+
+## What NOT to do
+
+- Don't add a custom domain config — subdomain deploy only, per client decision
+- Don't add Gemora as internal/company-branded — Abdus has direct permission from his employer to show it; treat it as a normal case study, not a special/sensitive one
+- Don't invent client testimonials, logos, or metrics not provided in `/content`
+- Don't reach for Three.js/WebGL even if it would look cool — out of scope, agreed with client
+- Don't let the entry sequence become a second contact-info gate — contact (WhatsApp/phone/email) must be reachable within one click from any page, animation or not
