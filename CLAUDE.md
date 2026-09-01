@@ -80,3 +80,13 @@ export interface CaseStudy {
 ```
 
 Do not invent metrics (traffic numbers, conversion rates) that weren't provided. If a number isn't known, describe outcome qualitatively ("live and in active use by the client's customers") rather than fabricating a stat — a client who asks about it in a call and gets a different answer than the site claims is worse than no stat at all.
+
+## Animation philosophy (read this before writing any GSAP)
+
+The client explicitly chose heavy animation knowing the trust/performance trade-off. That decision is final — don't re-litigate it in code. But "heavy" has rules:
+
+1. **Entry sequence runs once per session, not per navigation.** Use `sessionStorage` to gate it — first visit gets the full intro, every subsequent page view/internal nav does not replay it. A client re-opening the link mid-call must not sit through it twice.
+2. **The entry sequence must be skippable** — a visible "Skip" affordance or a tap-anywhere-to-skip, from the first frame.
+3. **`prefers-reduced-motion` is mandatory, not optional.** Every GSAP timeline and every Framer Motion variant checks this and substitutes an instant/near-instant transition when it's set. This is an accessibility requirement, not a style choice — do not skip it to save time.
+4. **Performance budget:** Lighthouse mobile performance score ≥ 80 on the homepage, even with the entry sequence. Use `next/image` for every image, lazy-load below-the-fold sections, and keep the entry sequence's asset weight under ~500KB. If a design idea can't hit this budget, simplify the idea — don't blow the budget.
+5. **Case study detail pages get lighter treatment than the homepage.** A client re-reading a case study to make a decision should not be fighting animation to read text. Scroll reveals on section-enter are fine; don't animate body copy itself.
