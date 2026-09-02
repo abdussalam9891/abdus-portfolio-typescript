@@ -115,16 +115,27 @@ export function EntrySequence() {
   return (
     <div
       ref={containerRef}
-      className="entry-overlay fixed inset-0 z-50 flex items-center justify-center bg-black text-white"
+      className="entry-overlay fixed inset-0 z-50 flex items-center justify-center bg-background text-foreground"
       onClick={() => skipRef.current()}
     >
+      {/* Same ambient green as the page behind it, so the overlay lifting
+          away reads as a reveal rather than a hard cut between two grounds. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(40rem 30rem at 50% 50%, rgb(34 197 94 / 0.18), transparent 65%)",
+        }}
+      />
+
       <button
         type="button"
         onClick={(event) => {
           event.stopPropagation();
           skipRef.current();
         }}
-        className="absolute top-6 right-6 text-sm uppercase tracking-wide text-white/70 hover:text-white"
+        className="absolute top-6 right-6 text-sm uppercase tracking-wide text-accent-bright/80 transition-colors duration-300 hover:text-accent-bright"
       >
         Skip
       </button>
@@ -134,7 +145,7 @@ export function EntrySequence() {
             key={i}
             lang={lang}
             dir={rtl ? "rtl" : "ltr"}
-            className="entry-word absolute inset-0 flex items-center justify-center whitespace-nowrap text-3xl font-semibold md:text-5xl"
+            className="entry-word text-gradient-accent absolute inset-0 flex items-center justify-center whitespace-nowrap text-3xl font-semibold md:text-5xl"
           >
             {text}
           </span>
