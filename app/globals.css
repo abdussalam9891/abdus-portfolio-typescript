@@ -409,3 +409,35 @@ body::before {
     transform: scaleX(1);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  /* No travelling light — settle into a plain static ring in the beam colour
+     rather than freezing the comet at 12 o'clock. */
+  .beam-border {
+    animation: none;
+    background: color-mix(in srgb, var(--beam-color) 35%, transparent);
+  }
+
+  .beam-border--glow {
+    display: none;
+  }
+
+  /* Same idea for the accent motion: keep the colour, drop the movement. */
+  .text-gradient-accent {
+    animation: none;
+    background-position: 0% 50%;
+  }
+
+  .accent-bloom::after {
+    animation: none;
+  }
+
+  .btn-premium:hover,
+  .btn-premium:active {
+    transform: none;
+  }
+
+  .btn-shine {
+    display: none;
+  }
+}
