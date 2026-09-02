@@ -12,23 +12,25 @@ import type { ReactNode } from "react";
  */
 export function CaseStudySection({
   label,
+  center = false,
   children,
 }: {
   label: string;
+  center?: boolean;
   children: ReactNode;
 }) {
   const reduced = useReducedMotion();
 
   return (
     <motion.section
-      className="px-6 md:px-10 py-10 border-t border-foreground/10"
+      className="px-6 md:px-10 py-10 border-t border-accent/15"
       initial={reduced ? "visible" : "hidden"}
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
       variants={fadeUp}
     >
-      <div className="max-w-3xl">
-        <h2 className="text-sm uppercase tracking-widest text-foreground/50">
+      <div className={center ? "max-w-3xl mx-auto text-center" : "max-w-3xl"}>
+        <h2 className="text-sm uppercase tracking-widest text-accent-bright/80">
           {label}
         </h2>
         {children}
