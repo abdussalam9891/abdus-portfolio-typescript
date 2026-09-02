@@ -9,12 +9,18 @@ interface ButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   icon?: IconType;
 }
 
+/*
+ * The hover sheen, lift, press and glow all live in `.btn-premium` and its
+ * variants in app/globals.css — CSS rather than Framer Motion so this stays a
+ * server component (it renders in the hero, on every card grid and in both
+ * footers, and none of those needed to become client bundles for a hover
+ * state). See the "Premium button" block there.
+ */
 const base =
-  "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-colors";
+  "btn-premium group/btn inline-flex items-center justify-center rounded-full px-5 py-3 md:px-6 text-sm font-medium";
 const variants = {
-  primary: "bg-foreground text-background hover:opacity-90",
-  ghost:
-    "border border-foreground/20 text-foreground hover:border-foreground/40",
+  primary: "btn-primary",
+  ghost: "btn-ghost",
 };
 
 export function Button({
@@ -34,8 +40,14 @@ export function Button({
       {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       {...rest}
     >
-      {Icon && <Icon className="size-4 shrink-0" aria-hidden="true" />}
-      {children}
+      {Icon && (
+        <Icon
+          className="relative z-[2] size-4 shrink-0 transition-transform duration-300 ease-out group-hover/btn:-translate-y-px group-hover/btn:scale-110"
+          aria-hidden="true"
+        />
+      )}
+      <span className="relative z-[2]">{children}</span>
+      <span aria-hidden="true" className="btn-shine" />
     </Link>
   );
 }
