@@ -89,7 +89,7 @@ export default async function AboutPage() {
               authentication logic and unoptimized asset delivery.
             </li>
             <li>
-              Independently built the frontend for Banshiwala, a
+              Independently built the frontend for Banshiwale, a
               men&apos;s jewelry client website, while a teammate handled
               the backend.
             </li>
