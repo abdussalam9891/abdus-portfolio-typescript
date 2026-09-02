@@ -102,3 +102,47 @@ export function typeDurationMs(charCount: number) {
     TYPE_CHAR_DURATION_S;
   return seconds * 1000;
 }
+
+/**
+ * Word-by-word reveal for display copy — the hero's cover quote. Deliberately
+ * softer and slower than `typeContainer`/`typeChar`: whole words rise and
+ * sharpen out of a blur instead of characters landing one at a time, so the
+ * quote reads as a pull-quote rather than as a second typewriter running
+ * next to the hero's rotating role.
+ */
+const QUOTE_STAGGER_S = 0.09;
+const QUOTE_DELAY_S = 0.5;
+const QUOTE_WORD_DURATION_S = 0.7;
+
+export const quoteContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: QUOTE_STAGGER_S,
+      delayChildren: QUOTE_DELAY_S,
+    },
+  },
+};
+
+export const quoteWord: Variants = {
+  hidden: { opacity: 0, y: 14, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: QUOTE_WORD_DURATION_S, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+/**
+ * When the last word of a `quoteContainer` run lands, in seconds. Derived
+ * from the variants above so the attribution that fades in after the quote
+ * stays in sync if the timing is retuned.
+ */
+export function quoteRevealDurationS(wordCount: number) {
+  return (
+    QUOTE_DELAY_S +
+    Math.max(0, wordCount - 1) * QUOTE_STAGGER_S +
+    QUOTE_WORD_DURATION_S
+  );
+}
