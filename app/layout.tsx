@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { EntrySequence } from "@/components/entry/EntrySequence";
 import { Nav } from "@/components/ui/Nav";
 import { Footer } from "@/components/ui/Footer";
+import { AmbientAudio } from "@/components/ui/AmbientAudio";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,6 +33,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Nav />
         {children}
         <Footer />
+        {/* Sits in the root layout so the track survives client-side
+            navigation instead of restarting on every page. */}
+        <AmbientAudio />
       </body>
     </html>
   );
