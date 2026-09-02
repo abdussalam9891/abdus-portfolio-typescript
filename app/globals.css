@@ -383,4 +383,29 @@ body::before {
       transparent
     );
   }
+
+  /* Underline that grows from the left — nav links and inline text links.
+     Set data-active="true" to hold it open for the current route. */
+  .link-underline {
+    position: relative;
+  }
+
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1.5px;
+    width: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent-deep), var(--accent-bright));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .link-underline:hover::after,
+  .link-underline[data-active="true"]::after {
+    transform: scaleX(1);
+  }
 }
