@@ -19,5 +19,6 @@ export const romanEnterprises: CaseStudy = {
       alt: "Roman Enterprises homepage showing the leather edge finishing hero section",
     },
   ],
+  liveUrl: "https://roman-liart.vercel.app",
   featured: true,
 };
