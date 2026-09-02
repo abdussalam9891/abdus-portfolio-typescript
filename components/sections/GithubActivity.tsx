@@ -84,11 +84,11 @@ export function GithubActivity({
       variants={fadeUp}
     >
       <p className="text-lg text-foreground/80">
-        Total: <span className="font-medium text-foreground">{data.total}</span>{" "}
+        Total: <span className="text-accent-glow font-medium">{data.total}</span>{" "}
         contributions in the last year
       </p>
 
-      <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+      <div className="mt-4 flex justify-center gap-2 overflow-x-auto pb-2">
         <div className="flex shrink-0 flex-col gap-[3px] pt-[18px] text-xs text-foreground/50">
           {Array.from({ length: 7 }).map((_, day) => (
             <div key={day} className="h-[10px] leading-[10px]">
@@ -132,7 +132,7 @@ export function GithubActivity({
           href={`https://github.com/${username}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-foreground/60 underline underline-offset-4 hover:text-foreground"
+          className="text-sm text-foreground/60 underline decoration-accent/40 underline-offset-4 transition-colors duration-300 hover:text-accent-bright"
         >
           @{username} on GitHub
         </a>
