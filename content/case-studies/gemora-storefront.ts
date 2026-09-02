@@ -12,6 +12,11 @@ export const gemoraStorefront: CaseStudy = {
     "Built the customer-facing storefront with vanilla HTML, Tailwind CSS, and JavaScript. Implemented multi-method auth (Google OAuth, email OTP, phone OTP), wishlist and cart (including atomic move-from-wishlist), a product catalog with filtering and pagination, and a full CMS module (announcement bar, static pages, homepage hero banners, site settings).",
   techStack: ["JavaScript", "Tailwind CSS", "Node.js", "Express", "MongoDB"],
   outcome: "Live storefront in production.",
-  images: [],
+  images: [
+    {
+      src: "/images/work/gemora-storefront/hero.webp",
+      alt: "Gemora storefront showing the jewelry shop-by-style product grid",
+    },
+  ],
   featured: true,
 };
