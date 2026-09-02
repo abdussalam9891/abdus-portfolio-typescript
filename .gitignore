@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scratch screenshots / image drops kept next to the project, not site assets
+/Screenshot*.png
+/bob.png
+/image.png
