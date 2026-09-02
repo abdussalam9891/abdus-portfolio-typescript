@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiMail, FiDownload, FiMapPin } from "react-icons/fi";
@@ -9,7 +9,14 @@ import { Badge } from "@/components/ui/Badge";
 import { BeamBorder } from "@/components/ui/BeamBorder";
 import { TypeReveal } from "@/components/ui/TypeReveal";
 import { useReducedMotion } from "@/lib/reduced-motion";
-import { fadeUp, staggerChildren } from "@/lib/motion";
+import {
+  fadeUp,
+  staggerChildren,
+  quoteContainer,
+  quoteWord,
+  quoteRevealDurationS,
+} from "@/lib/motion";
+import { COVER_QUOTE } from "@/lib/quotes";
 
 const ROLES = ["Full-stack Developer", "E&C Engineer", "Always Learning"];
 const ROLE_INTERVAL_MS = 2600;
@@ -89,8 +96,8 @@ export function Hero() {
             }
           >
             <Image
-              src="/images/hero/bob-marley.png"
-              alt="Bob Marley portrait with the quote: Emancipate yourselves from mental slavery, none but ourselves can free our minds."
+              src="/images/hero/bob-marley-portrait.png"
+              alt="Bob Marley portrait rendered in green, gold and red against a black background."
               fill
               sizes="(min-width: 768px) 896px, 100vw"
               className="object-cover"
@@ -108,6 +115,8 @@ export function Hero() {
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background/70 to-transparent"
           />
+
+          <CoverQuote reduced={reduced} />
 
           <BeamBorder glow duration={6} arc={0.16} />
         </motion.div>
@@ -176,6 +185,63 @@ export function Hero() {
         </motion.div>
       </div>
     </motion.section>
+  );
+}
+
+/**
+ * The cover quote, set over the right of the banner the way the original
+ * artwork had it baked into the image — but as real text, so it stays sharp
+ * at every size, is selectable, reaches screen readers, and can animate.
+ *
+ * Hidden below `sm`: the banner is only 10rem tall there and the art's face
+ * runs straight through the middle, so the quote would land on top of it at
+ * a size nobody can read. The footer's rotating quote still carries the line
+ * on mobile.
+ */
+function CoverQuote({ reduced }: { reduced: boolean }) {
+  const words = COVER_QUOTE.text.split(" ");
+
+  return (
+    <div className="absolute inset-y-0 right-0 hidden w-[58%] sm:flex sm:items-center sm:justify-end md:w-[42%]">
+      {/* The art is near-black on the right, but the face's red edge creeps
+          in at some crops — this keeps the text off it at every width. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-l from-background/85 via-background/45 to-transparent"
+      />
+      <blockquote className="relative pr-5 text-right md:pr-7">
+        <motion.p
+          className="font-serif text-sm font-semibold leading-snug text-foreground/95 [text-shadow:0_2px_14px_rgb(0_0_0/0.85)] md:text-base md:leading-relaxed"
+          variants={quoteContainer}
+          initial={reduced ? "visible" : "hidden"}
+          animate="visible"
+        >
+          {words.map((word, i) => (
+            // Words animate on a transform, so each one has to be
+            // inline-block; the spaces between them stay plain text nodes so
+            // lines still break at word boundaries (same trick as TypeReveal).
+            <Fragment key={i}>
+              <motion.span className="inline-block" variants={quoteWord}>
+                {word}
+              </motion.span>
+              {i < words.length - 1 ? " " : null}
+            </Fragment>
+          ))}
+        </motion.p>
+        <motion.cite
+          className="mt-1.5 block font-serif text-xs not-italic text-accent-bright/80 [text-shadow:0_2px_10px_rgb(0_0_0/0.85)] md:text-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={
+            reduced
+              ? { duration: 0 }
+              : { duration: 0.6, delay: quoteRevealDurationS(words.length) - 0.3 }
+          }
+        >
+          — {COVER_QUOTE.author}
+        </motion.cite>
+      </blockquote>
+    </div>
   );
 }
 
