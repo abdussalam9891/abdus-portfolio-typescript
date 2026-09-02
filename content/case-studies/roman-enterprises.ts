@@ -13,6 +13,11 @@ export const romanEnterprises: CaseStudy = {
   techStack: ["Next.js", "Tailwind CSS"],
   outcome:
     "Live at their production domain, serving both retail craftspeople and manufacturing clients.",
-  images: [],
+  images: [
+    {
+      src: "/images/work/roman-enterprises/hero.webp",
+      alt: "Roman Enterprises homepage showing the leather edge finishing hero section",
+    },
+  ],
   featured: true,
 };
