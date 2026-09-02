@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/lib/reduced-motion";
 import { fadeUp } from "@/lib/motion";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const LINKS = [
   { href: "/work", label: "Work" },
@@ -43,7 +42,6 @@ export function Nav() {
               </Link>
             );
           })}
-          <ThemeToggle />
         </div>
       </nav>
     </motion.header>
