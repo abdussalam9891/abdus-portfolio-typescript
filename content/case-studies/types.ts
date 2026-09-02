@@ -9,5 +9,12 @@ export interface CaseStudy {
   outcome: string; // status/result — live traffic, delivered, client type
   images: { src: string; alt: string }[];
   liveUrl?: string;
+  /**
+   * Caveat shown alongside the live link — a feature that's currently paused,
+   * a known limitation. Keep it to one sentence; it renders on cards too.
+   */
+  liveNote?: string;
+  /** Read-only demo account for a live site that sits behind a login. */
+  demoCredentials?: { email: string; password: string };
   featured: boolean; // controls home page condensed grid
 }
