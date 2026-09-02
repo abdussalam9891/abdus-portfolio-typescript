@@ -1,5 +1,5 @@
 import { Hero } from "@/components/sections/Hero";
-import { WorkGrid } from "@/components/sections/WorkGrid";
+import { WorkShowcase } from "@/components/sections/WorkShowcase";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
 import { ContactBlock } from "@/components/sections/ContactBlock";
 import { getFeaturedCaseStudies } from "@/content/case-studies";
@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <main className="flex-1">
       <Hero />
-      <WorkGrid caseStudies={featured} />
+      <WorkShowcase caseStudies={featured} />
       <AboutTeaser />
       <ContactBlock />
     </main>
