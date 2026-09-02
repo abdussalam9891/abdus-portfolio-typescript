@@ -92,6 +92,17 @@ The client explicitly chose heavy animation knowing the trust/performance trade-
 4. **Performance budget:** Lighthouse mobile performance score ≥ 80 on the homepage, even with the entry sequence. Use `next/image` for every image, lazy-load below-the-fold sections, and keep the entry sequence's asset weight under ~500KB. If a design idea can't hit this budget, simplify the idea — don't blow the budget.
 5. **Case study detail pages get lighter treatment than the homepage.** A client re-reading a case study to make a decision should not be fighting animation to read text. Scroll reveals on section-enter are fine; don't animate body copy itself.
 
+## Background audio
+
+The site plays a looping ambient track (`components/ui/AmbientAudio.tsx`, mounted in the root layout so it survives client-side navigation). Same trade-off as the animation: the client wants the saloon.wtf feel, so the guardrails are what make it survivable.
+
+1. **Never autoplay on mount.** Browsers block audible autoplay anyway; playback is armed on the visitor's first pointer/key event. Do not try to route around this with muted-autoplay-then-unmute tricks.
+2. **On by default, off in one click.** Every new visit comes up with sound armed; the toggle is reachable from every page. A mute is remembered in `sessionStorage`, so it holds for the rest of that visit (not just that page) but does not silence the site forever — deliberately, since music is part of the intended first impression. Do not move this to `localStorage` without revisiting that call.
+3. **There are three states, not two.** `pending` (armed, browser hasn't allowed sound yet), `playing`, `paused`. Before the first gesture the control must not claim to be "off" — it isn't, it's waiting. Read the mute preference through `useSyncExternalStore` (as `lib/reduced-motion.ts` does), not a `setState` inside an effect; the lint rule `react-hooks/set-state-in-effect` will reject the latter.
+4. **The audio file is never committed.** It streams from `NEXT_PUBLIC_AMBIENT_AUDIO_URL` (Vercel Blob / Cloudinary / Supabase Storage). With the var unset the component renders nothing — a fresh clone runs silent, not broken.
+5. **Licensed audio only.** Royalty-free or Abdus's own. Do not add a track ripped from Spotify/YouTube/Apple Music, and do not build a player around a streaming service's content: the Spotify Web Playback SDK needs every *visitor* to log in with Premium, and Spotify embeds only give logged-out visitors a ~30s preview they must start themselves.
+6. **It stays off the critical path.** The `<audio>` element is created lazily on that first gesture, so a Lighthouse run never fetches it and the homepage perf budget above is unaffected.
+
 ## Coding conventions
 
 - Components are function components, named exports, colocated types
@@ -112,4 +123,5 @@ The client explicitly chose heavy animation knowing the trust/performance trade-
 - Don't add Gemora as internal/company-branded — Abdus has direct permission from his employer to show it; treat it as a normal case study, not a special/sensitive one
 - Don't invent client testimonials, logos, or metrics not provided in `/content`
 - Don't reach for Three.js/WebGL even if it would look cool — out of scope, agreed with client
+- Don't commit an audio file to `/public`, or add music sourced from a streaming service — see "Background audio"
 - Don't let the entry sequence become a second contact-info gate — contact (WhatsApp/phone/email) must be reachable within one click from any page, animation or not
