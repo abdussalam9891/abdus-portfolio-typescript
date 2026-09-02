@@ -20,17 +20,17 @@ export function CaseStudyHero({ caseStudy }: { caseStudy: CaseStudy }) {
       <motion.div variants={fadeUp}>
         <Link
           href="/work"
-          className="text-sm text-foreground/60 hover:text-foreground transition-colors"
+          className="link-underline text-sm text-foreground/60 transition-colors duration-300 hover:text-accent-bright"
         >
           ← All work
         </Link>
       </motion.div>
       <motion.div variants={fadeUp} className="mt-6">
-        <Badge>{caseStudy.category}</Badge>
+        <Badge variant="accent">{caseStudy.category}</Badge>
       </motion.div>
       <motion.h1
         variants={fadeUp}
-        className="mt-4 text-4xl md:text-6xl font-semibold"
+        className="text-gradient-accent mt-4 text-4xl md:text-6xl font-semibold"
       >
         {caseStudy.clientName}
       </motion.h1>
