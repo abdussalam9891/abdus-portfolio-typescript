@@ -21,7 +21,16 @@ export const dropwatch: CaseStudy = {
     "shadcn/ui",
   ],
   outcome: "Live and functional at get-dropwatch.vercel.app.",
-  images: [],
+  images: [
+    {
+      src: "/images/work/dropwatch/home.webp",
+      alt: "DropWatch homepage with the product URL tracker and tracked products list",
+    },
+    {
+      src: "/images/work/dropwatch/price-history.webp",
+      alt: "DropWatch price history chart for a tracked product",
+    },
+  ],
   liveUrl: "https://get-dropwatch.vercel.app",
   featured: true,
 };
