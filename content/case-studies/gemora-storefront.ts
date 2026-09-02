@@ -18,5 +18,8 @@ export const gemoraStorefront: CaseStudy = {
       alt: "Gemora storefront showing the jewelry shop-by-style product grid",
     },
   ],
+  liveUrl: "https://gemora-jwelry.vercel.app",
+  liveNote:
+    "Phone and email OTP sign-in is paused right now — the Firebase free tier quota ran out. Browsing, filtering, cart and wishlist all still work.",
   featured: true,
 };
