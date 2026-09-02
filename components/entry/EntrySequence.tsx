@@ -135,17 +135,17 @@ export function EntrySequence() {
           event.stopPropagation();
           skipRef.current();
         }}
-        className="absolute top-6 right-6 text-sm uppercase tracking-wide text-accent-bright/80 transition-colors duration-300 hover:text-accent-bright"
+        className="absolute top-4 right-4 rounded-full border border-accent/30 px-3 py-2 text-xs uppercase tracking-wide text-accent-bright/80 transition-colors duration-300 hover:border-accent/60 hover:text-accent-bright sm:top-6 sm:right-6 sm:text-sm"
       >
         Skip
       </button>
-      <div className="relative h-16 w-full max-w-2xl px-6 md:h-24">
+      <div className="relative h-12 w-full max-w-2xl px-4 sm:h-16 sm:px-6 md:h-24">
         {NAME_SEQUENCE.map(({ text, lang, rtl }, i) => (
           <span
             key={i}
             lang={lang}
             dir={rtl ? "rtl" : "ltr"}
-            className="entry-word text-gradient-accent absolute inset-0 flex items-center justify-center whitespace-nowrap text-3xl font-semibold md:text-5xl"
+            className="entry-word text-gradient-accent absolute inset-0 flex items-center justify-center whitespace-nowrap text-2xl font-semibold sm:text-3xl md:text-5xl"
           >
             {text}
           </span>
