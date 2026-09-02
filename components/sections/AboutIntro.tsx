@@ -59,20 +59,7 @@ export function AboutIntro() {
             — design, code, database, deployment, the whole thing — instead
             of just one slice of the stack.
           </motion.p>
-          <motion.p
-            variants={fadeUp}
-            className="mt-4 text-lg text-foreground/70 max-w-2xl"
-          >
-            I&apos;ve built a{" "}
-            <strong className="text-accent-glow font-semibold">
-              jewelry store
-            </strong>{" "}
-            with real payments and OTP login, and a{" "}
-            <strong className="text-accent-glow font-semibold">
-              price-tracker
-            </strong>{" "}
-            that scrapes sites and pings you the second something drops.
-          </motion.p>
+          
           <motion.p
             variants={fadeUp}
             className="mt-4 text-lg text-foreground/70 max-w-2xl"
