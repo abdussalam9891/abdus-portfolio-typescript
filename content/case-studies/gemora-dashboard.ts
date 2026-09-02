@@ -20,6 +20,15 @@ export const gemoraDashboard: CaseStudy = {
     "MongoDB",
   ],
   outcome: "Live and in active use for order and content management.",
-  images: [],
+  images: [
+    {
+      src: "/images/work/gemora-dashboard/dark.webp",
+      alt: "Gemora admin dashboard revenue chart and recent orders in dark mode",
+    },
+    {
+      src: "/images/work/gemora-dashboard/light.webp",
+      alt: "Gemora admin dashboard revenue chart and recent orders in light mode",
+    },
+  ],
   featured: true,
 };
