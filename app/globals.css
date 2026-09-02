@@ -1,37 +1,46 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
+/* The site is dark-only by design — the motion work (entry sequence, blob
+   glows, border beams) is drawn for a dark ground, so there is no light
+   palette and no theme toggle. Every component reads these vars rather than
+   hard-coded colours, so this block is the single place to retune them. */
 :root {
-  color-scheme: light;
-  --background: #ffffff;
-  --foreground: #171717;
-  --gh-level-0: #ebedf0;
-  --gh-level-1: #9be9a8;
-  --gh-level-2: #40c463;
-  --gh-level-3: #30a14e;
-  --gh-level-4: #216e39;
+  color-scheme: dark;
+  /* Near-black, nudged a few points toward green so the whole page sits on a
+     ground that agrees with the accent instead of fighting it. */
+  --background: #050806;
+  --foreground: #eaf2ec;
+  /* Raised card ground — sits just off --background so image/media cards
+     read as panels against the page instead of blending into it. */
+  --surface: #0c110d;
+
+  /* Accent scale, sampled from the Bob Marley cover art in the hero.
+     --accent-deep is the flag green straight out of the image; --accent is
+     the working accent for borders, beams and glows; --accent-bright is the
+     one to use for text — it clears 12:1 against --background, which the
+     deeper two do not. */
+  --accent-deep: #00b140;
+  --accent: #22c55e;
+  --accent-bright: #4ade80;
+  --accent-soft: #86efac;
+
+  --gh-level-0: #101a13;
+  --gh-level-1: #0e4429;
+  --gh-level-2: #006d32;
+  --gh-level-3: #26a641;
+  --gh-level-4: #39d353;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-soft: var(--accent-soft);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-/* Theme is class-driven (see lib/theme.ts + ThemeToggle) so the toggle can
-   override the OS preference; the inline head script applies this class
-   before first paint to avoid a flash of the wrong theme. */
-.dark {
-  color-scheme: dark;
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --gh-level-0: #161b22;
-  --gh-level-1: #0e4429;
-  --gh-level-2: #006d32;
-  --gh-level-3: #26a641;
-  --gh-level-4: #39d353;
 }
 
 body {
@@ -39,6 +48,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Safety net for plain CSS transitions/animations (hover states, etc.) that
