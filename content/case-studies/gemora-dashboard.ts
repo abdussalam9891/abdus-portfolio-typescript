@@ -30,5 +30,11 @@ export const gemoraDashboard: CaseStudy = {
       alt: "Gemora admin dashboard revenue chart and recent orders in light mode",
     },
   ],
+  liveUrl: "https://jwelry-admin-dashboard.vercel.app/login",
+  liveNote: "The dashboard sits behind RBAC — sign in with the demo account below.",
+  demoCredentials: {
+    email: "demo.gemora@example.com",
+    password: "demo@9891",
+  },
   featured: true,
 };
