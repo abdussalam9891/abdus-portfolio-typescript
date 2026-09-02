@@ -36,12 +36,12 @@ export default async function AboutPage() {
     <main className="flex-1">
       <AboutIntro />
 
-      <CaseStudySection label="Skills">
+      <CaseStudySection label="Skills" center>
         <div className="mt-4 space-y-6">
           {SKILL_GROUPS.map((group) => (
             <div key={group.label}>
-              <h3 className="text-sm text-foreground/50">{group.label}</h3>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <h3 className="text-sm text-accent/70">{group.label}</h3>
+              <div className="mt-2 flex flex-wrap justify-center gap-2">
                 {group.skills.map((skill) => (
                   <Badge key={skill} icon={getSkillIcon(skill)}>
                     {skill}
@@ -53,10 +53,13 @@ export default async function AboutPage() {
         </div>
       </CaseStudySection>
 
-      <CaseStudySection label="Education">
+      <CaseStudySection label="Education" center>
         <p className="mt-4 text-lg text-foreground/80">
-          Bachelor of Technology in Electronics &amp; Communication
-          Engineering (2021 – 2025)
+          <span className="text-accent-bright">
+            Bachelor of Technology in Electronics &amp; Communication
+            Engineering
+          </span>{" "}
+          (2021 – 2025)
         </p>
         <p className="mt-1 text-foreground/60">
           Deenbandhu Chhotu Ram University of Science &amp; Technology,
@@ -64,19 +67,19 @@ export default async function AboutPage() {
         </p>
       </CaseStudySection>
 
-      <CaseStudySection label="Experience">
-        <div className="mt-4">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <p className="text-lg font-medium text-foreground/90">
-              Full Stack Developer Intern — Fuel It Online (Imperial
-              Milestone Pvt. Ltd.)
-            </p>
-            <p className="text-sm text-foreground/50 whitespace-nowrap">
-              Mar 2026 – Present
-            </p>
-          </div>
+      <CaseStudySection label="Experience" center>
+        <div className="mt-4 flex flex-col items-center">
+          <p className="text-lg font-medium text-foreground/90">
+            <span className="text-accent-bright">
+              Full Stack Developer Intern
+            </span>{" "}
+            — Fuel It Online (Imperial Milestone Pvt. Ltd.)
+          </p>
+          <p className="text-sm text-foreground/50 whitespace-nowrap">
+            Mar 2026 – Present
+          </p>
           <p className="text-sm text-foreground/50">Jaipur, India (Hybrid)</p>
-          <ul className="mt-4 space-y-2 text-foreground/80 list-disc list-inside">
+          <ul className="mt-4 max-w-xl mx-auto space-y-2 text-left text-foreground/80 list-disc list-inside">
             <li>
               Sole full-stack owner of Gemora, a jewelry e-commerce platform.
             </li>
@@ -95,7 +98,7 @@ export default async function AboutPage() {
       </CaseStudySection>
 
       {contributions && (
-        <CaseStudySection label="GitHub Activity">
+        <CaseStudySection label="GitHub Activity" center>
           <GithubActivity username={GITHUB_USERNAME} data={contributions} />
         </CaseStudySection>
       )}
