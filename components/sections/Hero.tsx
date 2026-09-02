@@ -47,7 +47,7 @@ export function Hero() {
 
   return (
     <motion.section
-      className="px-6 md:px-10 pt-28 pb-20 md:pt-36 md:pb-28"
+      className="px-6 md:px-10 pt-8 pb-20 md:pt-10 md:pb-28"
       initial={reduced ? "visible" : "hidden"}
       animate="visible"
       variants={staggerChildren}
