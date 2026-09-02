@@ -16,6 +16,7 @@ Visual direction is **deliberately animation-heavy**, closer to award-site terri
 - GSAP + ScrollTrigger — the scripted entry sequence only (Framer Motion for everything else; don't mix animation libraries for the same job)
 - Deployed to Vercel, subdomain only, no custom domain (`*.vercel.app`)
 - No Three.js / WebGL / 3D — explicitly out of scope. The brief is "heavy 2D motion," not a 3D world.
+- **Dark theme only.** No light palette, no theme toggle, no `prefers-color-scheme` switching. The motion work (entry sequence, blob glows, border beams) is drawn for a dark ground and the light version was visibly weaker; since the OS preference decided the default, a majority of first-time visitors were landing on the worse-looking theme. Colours live as CSS vars on `:root` in `app/globals.css` — retune them there, and keep components reading `--background`/`--foreground` rather than hard-coding colours.
 
 ## Folder structure
 
@@ -107,6 +108,7 @@ The client explicitly chose heavy animation knowing the trust/performance trade-
 ## What NOT to do
 
 - Don't add a custom domain config — subdomain deploy only, per client decision
+- Don't reintroduce a light theme, a `ThemeToggle`, or `dark:` Tailwind variants — the site is dark-only (see tech stack). There is deliberately no `lib/theme.ts` and no pre-paint theme script.
 - Don't add Gemora as internal/company-branded — Abdus has direct permission from his employer to show it; treat it as a normal case study, not a special/sensitive one
 - Don't invent client testimonials, logos, or metrics not provided in `/content`
 - Don't reach for Three.js/WebGL even if it would look cool — out of scope, agreed with client
