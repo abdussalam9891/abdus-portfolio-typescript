@@ -128,6 +128,19 @@ body::before {
   }
 }
 
+/* Shared accent motion — each of these is used by more than one component
+   below. Keep one-off animations in the component that needs them. */
+
+@keyframes accent-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
 @layer components {
   .beam-border {
     --beam-color: var(--accent);
@@ -163,5 +176,35 @@ body::before {
     /* Dimmed via filter, not `opacity`, so the hover-fade opacity utility on
        BeamBorder's hoverOnly variant doesn't cancel the dimming. */
     filter: blur(4px) opacity(0.65);
+  }
+
+  /* -------------------------------------------------------------------------
+     Accent text
+
+     .text-accent-glow adds a halo for the handful of hero-scale words that
+     should feel lit rather than merely coloured. Both it and Tailwind's
+     `text-accent-bright` read --accent-bright and never --accent, so
+     highlighted words keep their contrast against the near-black ground.
+  ------------------------------------------------------------------------- */
+  .text-accent-glow {
+    color: var(--accent-bright);
+    text-shadow: 0 0 18px rgb(34 197 94 / 0.55), 0 0 42px rgb(34 197 94 / 0.25);
+  }
+
+  /* Heading treatment: foreground fading into the accent, with the gradient
+     slowly drifting so large type never sits completely still. */
+  .text-gradient-accent {
+    background-image: linear-gradient(
+      100deg,
+      var(--foreground) 0%,
+      var(--foreground) 35%,
+      var(--accent-bright) 65%,
+      var(--accent-deep) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: accent-drift 8s ease-in-out infinite;
   }
 }
