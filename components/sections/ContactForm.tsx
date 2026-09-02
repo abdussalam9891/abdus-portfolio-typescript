@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useReducedMotion } from "@/lib/reduced-motion";
 import { fadeUp, staggerChildren } from "@/lib/motion";
+import { BeamBorder } from "@/components/ui/BeamBorder";
+import { Toast } from "@/components/ui/Toast";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -13,7 +15,7 @@ const inputClasses =
 export function ContactForm() {
   const reduced = useReducedMotion();
   const [status, setStatus] = useState<Status>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +29,6 @@ export function ContactForm() {
     };
 
     setStatus("submitting");
-    setErrorMessage("");
 
     try {
       const res = await fetch("/api/contact", {
@@ -39,15 +40,18 @@ export function ContactForm() {
 
       if (!res.ok) {
         setStatus("error");
-        setErrorMessage(result.error ?? "Something went wrong. Please try again.");
+        setToastMessage(result.error ?? "Something went wrong. Please try again.");
         return;
       }
 
       setStatus("success");
+      setToastMessage(
+        `Thanks, ${payload.firstName}! Your message is on its way — I'll get back to you soon.`
+      );
       form.reset();
     } catch {
       setStatus("error");
-      setErrorMessage("Something went wrong. Please try again.");
+      setToastMessage("Something went wrong. Please try again.");
     }
   }
 
@@ -99,24 +103,30 @@ export function ContactForm() {
         />
       </motion.label>
 
-      <motion.div variants={fadeUp} className="flex items-center gap-4">
+      <motion.div variants={fadeUp} className="flex justify-center">
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="inline-flex items-center justify-center rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="btn-premium btn-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-50"
         >
-          {status === "submitting" ? "Sending…" : "Send message"}
-        </button>
-
-        {status === "success" && (
-          <span className="text-sm text-foreground/70">
-            Thanks — I&apos;ll get back to you soon.
+          <span className="relative z-[2]">
+            {status === "submitting" ? "Sending…" : "Send message"}
           </span>
-        )}
-        {status === "error" && (
-          <span className="text-sm text-red-500">{errorMessage}</span>
-        )}
+          <span aria-hidden="true" className="btn-shine" />
+          <BeamBorder glow width={2} duration={3} color="var(--accent-soft)" />
+        </button>
       </motion.div>
+
+      <AnimatePresence>
+        {(status === "success" || status === "error") && (
+          <Toast
+            key={status}
+            message={toastMessage}
+            variant={status === "success" ? "success" : "error"}
+            onDismiss={() => setStatus("idle")}
+          />
+        )}
+      </AnimatePresence>
     </motion.form>
   );
 }
