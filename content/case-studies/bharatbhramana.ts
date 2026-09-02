@@ -13,6 +13,11 @@ export const bharatbhramana: CaseStudy = {
   // TODO(abdus): tech stack unconfirmed — defaulted to match the other client sites, confirm or correct.
   techStack: ["Next.js", "Tailwind CSS"],
   outcome: "Live in production, handling real customer inquiries via WhatsApp.",
-  images: [],
+  images: [
+    {
+      src: "/images/work/bharatbhramana/hero.webp",
+      alt: "BharatBhramana homepage showing the private car and driver booking hero section",
+    },
+  ],
   featured: true,
 };
