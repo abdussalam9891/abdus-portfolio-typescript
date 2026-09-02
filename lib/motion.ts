@@ -29,3 +29,13 @@ export const scaleIn: Variants = {
     transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
   },
 };
+
+/**
+ * Crossfade for swapping content in place (e.g. the active preview image in
+ * WorkShowcase). Pair with AnimatePresence mode="wait" and a per-item key.
+ */
+export const crossFade: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
+  exit: { opacity: 0, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } },
+};
