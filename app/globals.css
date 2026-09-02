@@ -107,3 +107,61 @@ body::before {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Running border beam — see components/ui/BeamBorder.tsx
+
+   A conic gradient whose start angle is animated, masked down to a ring so
+   only the element's border shows. Animating a registered custom property
+   (rather than rotating an oversized square) means the beam tracks any
+   aspect ratio and any border-radius for free.
+--------------------------------------------------------------------------- */
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@layer components {
+  .beam-border {
+    --beam-color: var(--accent);
+    --beam-width: 1px;
+    --beam-arc: 0.12turn;
+    --beam-duration: 4s;
+
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    /* Inherits the host element's radius, so the beam follows any rounding. */
+    border-radius: inherit;
+    padding: var(--beam-width);
+    background: conic-gradient(
+      from var(--beam-angle),
+      transparent 0turn,
+      var(--beam-color) var(--beam-arc),
+      transparent calc(var(--beam-arc) * 2)
+    );
+    /* Punch out the middle: paint the padding ring only. */
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    animation: beam-spin var(--beam-duration) linear infinite;
+  }
+
+  .beam-border--glow {
+    /* Dimmed via filter, not `opacity`, so the hover-fade opacity utility on
+       BeamBorder's hoverOnly variant doesn't cancel the dimming. */
+    filter: blur(4px) opacity(0.65);
+  }
+}
