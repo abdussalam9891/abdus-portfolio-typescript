@@ -8,7 +8,7 @@ import { fadeUp, staggerChildren } from "@/lib/motion";
 type Status = "idle" | "submitting" | "success" | "error";
 
 const inputClasses =
-  "w-full rounded-xl border border-foreground/15 bg-foreground/[0.02] px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 outline-none transition-colors focus:border-foreground/40";
+  "w-full rounded-xl border border-accent/20 bg-accent/[0.03] px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 outline-none transition-all duration-300 hover:border-accent/35 focus:border-accent/70 focus:bg-accent/[0.06] focus:shadow-[0_0_22px_-8px_rgb(34_197_94/0.8)]";
 
 export function ContactForm() {
   const reduced = useReducedMotion();
@@ -54,7 +54,7 @@ export function ContactForm() {
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="mt-10 max-w-2xl space-y-6"
+      className="mt-10 space-y-6 text-left"
       initial={reduced ? "visible" : "hidden"}
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
