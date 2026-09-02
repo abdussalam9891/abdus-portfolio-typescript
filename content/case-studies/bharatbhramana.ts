@@ -19,5 +19,6 @@ export const bharatbhramana: CaseStudy = {
       alt: "BharatBhramana homepage showing the private car and driver booking hero section",
     },
   ],
+  liveUrl: "https://bharat-bharman.vercel.app",
   featured: true,
 };
