@@ -5,6 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/Badge";
 import { BeamBorder } from "@/components/ui/BeamBorder";
+import { DemoCredentials } from "@/components/ui/DemoCredentials";
+import { LiveSiteLink } from "@/components/ui/LiveSiteLink";
 import { fadeUp } from "@/lib/motion";
 import type { CaseStudy } from "@/content/case-studies";
 
@@ -13,10 +15,17 @@ export function WorkCard({ caseStudy }: { caseStudy: CaseStudy }) {
 
   return (
     <motion.div variants={fadeUp} className="h-full">
-      <Link
-        href={`/work/${caseStudy.slug}`}
-        className="surface-accent group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-surface hover:-translate-y-1.5"
-      >
+      {/*
+       * A div with a stretched overlay link rather than one wrapping <a>:
+       * the live-site link has to be a sibling of the case-study link, not
+       * an anchor nested inside one.
+       */}
+      <div className="surface-accent group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-surface hover:-translate-y-1.5">
+        <Link
+          href={`/work/${caseStudy.slug}`}
+          aria-label={`Read the ${caseStudy.clientName} case study`}
+          className="absolute inset-0 z-[1] rounded-2xl"
+        />
         <div className="relative aspect-[4/3] bg-accent/[0.06] flex items-center justify-center overflow-hidden">
           {image ? (
             <Image
@@ -47,9 +56,27 @@ export function WorkCard({ caseStudy }: { caseStudy: CaseStudy }) {
           <p className="mt-1 text-xs text-foreground/60 leading-relaxed">
             {caseStudy.oneLiner}
           </p>
+          {caseStudy.liveUrl && (
+            <div className="mt-auto pt-4">
+              <LiveSiteLink
+                href={caseStudy.liveUrl}
+                clientName={caseStudy.clientName}
+              />
+              {/* Clamped here, in full on the case study page — a card
+                  shouldn't grow a paragraph over a caveat. */}
+              {caseStudy.liveNote && (
+                <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-foreground/45">
+                  {caseStudy.liveNote}
+                </p>
+              )}
+              {caseStudy.demoCredentials && (
+                <DemoCredentials {...caseStudy.demoCredentials} compact />
+              )}
+            </div>
+          )}
         </div>
         <BeamBorder hoverOnly glow duration={3.5} />
-      </Link>
+      </div>
     </motion.div>
   );
 }
