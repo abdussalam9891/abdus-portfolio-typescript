@@ -7,6 +7,7 @@ import { TypeReveal } from "@/components/ui/TypeReveal";
 import { useReducedMotion } from "@/lib/reduced-motion";
 import { fadeUp, typeDurationMs } from "@/lib/motion";
 import { CONTACT } from "@/lib/contact";
+import { QUOTES, type Quote } from "@/lib/quotes";
 
 const LINKS = [
   { href: "/", label: "Home" },
@@ -15,32 +16,6 @@ const LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-const QUOTES = [
-  {
-    text: "Emancipate yourselves from mental slavery, none but ourselves can free our minds.",
-    author: "Bob Marley",
-  },
-  {
-    text: "Work is love made visible.",
-    author: "Kahlil Gibran",
-  },
-  {
-    text: "When you give up, your dreams and everything else fade away.",
-    author: "Ichigo Kurosaki, Bleach",
-  },
-  {
-    text: "A dropout will beat a genius through hard work.",
-    author: "Rock Lee, Naruto",
-  },
-  {
-    text: "If you don't take risks, you can't create a future.",
-    author: "Monkey D. Luffy, One Piece",
-  },
-  {
-    text: "A lesson without pain is meaningless, for you cannot gain something without sacrificing something else in return.",
-    author: "Edward Elric, Fullmetal Alchemist",
-  },
-];
 // How long a quote stays up once it has finished typing. The typing time
 // itself is derived from the shared variants, so a long quote is never
 // swapped out mid-sentence.
@@ -121,7 +96,7 @@ function QuoteCard({
   quote,
   reduced,
 }: {
-  quote: { text: string; author: string };
+  quote: Quote;
   reduced: boolean;
 }) {
   const [citeVisible, setCiteVisible] = useState(reduced);
