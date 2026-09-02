@@ -151,6 +151,16 @@ body::before {
   }
 }
 
+@keyframes eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
 @keyframes accent-drift {
   0%,
   100% {
@@ -408,6 +418,31 @@ body::before {
   .link-underline[data-active="true"]::after {
     transform: scaleX(1);
   }
+
+  /* -------------------------------------------------------------------------
+     Equalizer bars — see components/ui/AmbientAudio.tsx
+
+     Four bars that bounce while the ambient track is playing and settle into
+     a flat, dimmed row when it isn't, so the control reads as on/off at a
+     glance without swapping icons.
+  ------------------------------------------------------------------------- */
+  .eq-bar {
+    width: 2px;
+    height: 100%;
+    border-radius: 999px;
+    transform-origin: bottom;
+    transform: scaleY(0.22);
+    background: var(--accent-bright);
+    opacity: 0.45;
+    transition:
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.35s ease;
+  }
+
+  .eq-bar[data-playing="true"] {
+    opacity: 1;
+    animation: eq-bounce 1.1s ease-in-out infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -439,5 +474,11 @@ body::before {
 
   .btn-shine {
     display: none;
+  }
+
+  /* Keep the on/off distinction, drop the bounce. */
+  .eq-bar[data-playing="true"] {
+    animation: none;
+    transform: scaleY(0.75);
   }
 }
