@@ -45,3 +45,6 @@ next-env.d.ts
 /Screenshot*.png
 /bob.png
 /image.png
+
+.vercel
+.env*
