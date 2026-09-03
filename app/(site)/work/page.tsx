@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function WorkPage() {
   return (
     <main className="flex-1">
-      <div className="px-6 md:px-10 pt-28 md:pt-36 flex flex-col items-center text-center">
+      <div className="px-6 md:px-10 pt-8 md:pt-10 flex flex-col items-center text-center">
         <h1 className="text-gradient-accent text-4xl md:text-6xl font-semibold">
           Work
         </h1>

@@ -14,7 +14,7 @@ export function AboutIntro() {
 
   return (
     <motion.section
-      className="px-6 md:px-10 pt-28 pb-12 md:pt-36 md:pb-16"
+      className="px-6 md:px-10 pt-8 pb-12 md:pt-10 md:pb-16"
       initial={reduced ? "visible" : "hidden"}
       animate="visible"
       variants={staggerChildren}
@@ -59,7 +59,7 @@ export function AboutIntro() {
             — design, code, database, deployment, the whole thing — instead
             of just one slice of the stack.
           </motion.p>
-          
+
           <motion.p
             variants={fadeUp}
             className="mt-4 text-lg text-foreground/70 max-w-2xl"
