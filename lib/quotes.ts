@@ -35,4 +35,8 @@ export const QUOTES: Quote[] = [
     text: "A lesson without pain is meaningless, for you cannot gain something without sacrificing something else in return.",
     author: "Edward Elric, Fullmetal Alchemist",
   },
+  {
+    text: "If the pain doesn't kill me, it will only make me stronger.",
+    author: "Sung Jin-Woo, Solo Leveling",
+  },
 ];
