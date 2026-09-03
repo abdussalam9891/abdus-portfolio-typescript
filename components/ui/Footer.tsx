@@ -4,17 +4,24 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { TypeReveal } from "@/components/ui/TypeReveal";
+import { ViewCounter } from "@/components/ui/ViewCounter";
 import { useReducedMotion } from "@/lib/reduced-motion";
 import { fadeUp, typeDurationMs } from "@/lib/motion";
 import { AMBIENT_DOCK_CLEARANCE, hasAmbientTrack } from "@/lib/ambient-audio";
 import { CONTACT } from "@/lib/contact";
 import { QUOTES, type Quote } from "@/lib/quotes";
+import { hasGearContent } from "@/content/gear";
 
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
+  { href: "/setup", label: "Setup" },
+  // /gear exists but stays out of the footer until content/gear.ts has
+  // something in it — no link to an empty page.
+  ...(hasGearContent ? [{ href: "/gear", label: "Gear" }] : []),
   { href: "/contact", label: "Contact" },
+  { href: "/privacy", label: "Privacy" },
 ];
 
 // How long a quote stays up once it has finished typing. The typing time
@@ -61,6 +68,7 @@ export function Footer() {
 
       <div className="mt-8 flex flex-col items-center gap-2 border-t border-accent/15 pt-6 text-xs text-foreground/50 sm:flex-row sm:justify-between">
         <p>© {year} Abdus. All rights reserved.</p>
+        <ViewCounter />
         <p>
           Designed &amp; Developed by{" "}
           <a
