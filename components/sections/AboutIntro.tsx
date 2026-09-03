@@ -47,30 +47,29 @@ export function AboutIntro() {
           >
             Abdus Salam
           </motion.h1>
-          <motion.p
-            variants={fadeUp}
-            className="mt-6 text-lg text-foreground/70 max-w-2xl"
-          >
-            I&apos;m a full-stack dev based in{" "}
-            <span className="text-accent-bright">New Delhi</span>. I build things{" "}
-            <strong className="text-accent-glow font-semibold">
-              start to finish
-            </strong>{" "}
-            — design, code, database, deployment, the whole thing — instead
-            of just one slice of the stack.
-          </motion.p>
+         <motion.p
+  variants={fadeUp}
+  className="mt-6 text-lg text-foreground/70 max-w-2xl"
+>
+  I&apos;m a full-stack developer based in{" "}
+  <span className="text-accent-bright">New Delhi</span>. I like taking
+  ideas from a blank screen to something people can actually use —{" "}
+  <strong className="text-accent-glow font-semibold">
+    design, code, database, deployment, and everything in between.
+  </strong>
+</motion.p>
 
-          <motion.p
-            variants={fadeUp}
-            className="mt-4 text-lg text-foreground/70 max-w-2xl"
-          >
-            Day job&apos;s hybrid, but{" "}
-            <strong className="text-accent-glow font-semibold decoration-accent/50 underline underline-offset-4">
-              most nights I&apos;m still at the keyboard
-            </strong>{" "}
-            — some people wind down with Netflix, I wind down debugging my
-            own side projects. 😉
-          </motion.p>
+<motion.p
+  variants={fadeUp}
+  className="mt-4 text-lg text-foreground/70 max-w-2xl"
+>
+  Outside my day job, I take on{" "}
+  <strong className="text-accent-glow font-semibold decoration-accent/50 underline underline-offset-4">
+    freelance projects
+  </strong>{" "}
+  and build my own stuff. If there&apos;s an idea I can turn into a real
+  product, chances are I&apos;ll end up working on it way past midnight.
+</motion.p>
           <motion.div
             variants={fadeUp}
             className="mt-8 flex flex-wrap justify-center gap-4"

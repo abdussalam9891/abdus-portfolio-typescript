@@ -166,16 +166,14 @@ export function Hero() {
           </p>
         </motion.div>
 
-        <motion.p
-          variants={fadeUp}
-          className="mt-6 px-2 text-lg text-foreground/70 max-w-2xl"
-        >
-          I work a full-time remote dev job and take on{" "}
-          <span className="text-accent-glow font-medium">freelance client work</span>{" "}
-          on the side — designing, building, and{" "}
-          <span className="text-accent-glow font-medium">shipping real products</span>,
-          not prototypes.
-        </motion.p>
+      <motion.p
+  variants={fadeUp}
+  className="mt-6 px-2 text-lg text-foreground/70 max-w-2xl"
+>
+  I’m a Full-Stack Developer who works with freelance clients to build and launch{" "}
+  <span className="text-accent-glow font-medium">production-ready digital products</span>
+  {" "}—from design and development to deployment, hosting, domains, DNS, SEO, and ongoing optimization.
+</motion.p>
 
         <motion.div
           variants={fadeUp}
