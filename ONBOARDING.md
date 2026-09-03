@@ -281,7 +281,10 @@ routes file anywhere — the folder structure *is* the URL structure.
 | `app/(site)/work/page.tsx` | `/work` |
 | `app/(site)/work/[slug]/page.tsx` | `/work/reisagri`, `/work/dropwatch`, … |
 | `app/(site)/about/page.tsx` | `/about` |
+| `app/(site)/setup/page.tsx` | `/setup` |
+| `app/(site)/privacy/page.tsx` | `/privacy` |
 | `app/api/contact/route.ts` | `POST /api/contact` |
+| `app/api/views/route.ts` | `GET` / `POST /api/views` |
 
 Filenames with special meaning:
 
@@ -452,7 +455,10 @@ an event handler, a browser API, or a Framer Motion component.
 
 ## 6. Data flow in this site
 
-There is no database. Trace one case study end to end:
+Nothing the site *displays* comes from a database — the one exception is the
+footer's visit total, which is a single integer in Redis (see `lib/views.ts`).
+All the content is typed objects in `/content`. Trace one case study end to
+end:
 
 ```
 content/case-studies/reisagri.ts        one typed object

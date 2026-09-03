@@ -13,13 +13,16 @@ the examples. Come back here for the map.
 
 ## 1. The 60-second version
 
-A single visitor-facing Next.js site. Five pages (home, work index, work
-detail, about, contact) plus one API route for the contact form. There is no
-database, no CMS and no auth. Everything the site shows is either:
+A single visitor-facing Next.js site. Eight pages (home, work index, work
+detail, about, contact, setup, gear, privacy) plus two API routes. There is no
+CMS and no auth, and the only stored state anywhere is a single integer — the
+footer's visit total. Everything the site shows is either:
 
-- **hard-coded content** in `/content/case-studies/*.ts` (typed objects), or
+- **hard-coded content** in `/content/*.ts` (typed objects — case studies,
+  the setup and gear lists, the privacy policy), or
 - **fetched at request time and cached for an hour** (the GitHub contribution
   graph), or
+- **one number read from Redis** (the visit counter, §10), or
 - **posted out** (contact form → Resend → inbox).
 
 That means almost every page is statically renderable. The complexity in this
@@ -88,7 +91,11 @@ app/
     work/[slug]/page.tsx  /work/reisagri, etc.
     about/page.tsx        /about
     contact/page.tsx      /contact
+    setup/page.tsx        /setup    editor + extensions
+    gear/page.tsx         /gear     hardware — unwritten, see content/gear.ts
+    privacy/page.tsx      /privacy
   api/contact/route.ts    POST /api/contact
+  api/views/route.ts      GET/POST /api/views  (the visit counter, §10)
 
 components/
   entry/EntrySequence.tsx     the GSAP intro
@@ -97,6 +104,9 @@ components/
   case-study/                 pieces used only by /work/[slug]
 
 content/case-studies/         the site's "database"
+content/setup.ts              editor list; gear.ts reuses its types
+content/gear.ts               hardware list — empty on purpose
+content/privacy.ts            the privacy policy as typed blocks
 lib/                          framework-free helpers + shared state stores
 public/                       images, resume PDF (no audio — see §7)
 ```
@@ -155,15 +165,21 @@ Everything is a **Server Component** unless the file starts with
 components ship JS to the browser and can use hooks/state/events.
 
 **Server (no `"use client"`):**
-`app/layout.tsx`, all five `page.tsx` files, `api/contact/route.ts`,
+`app/layout.tsx`, all eight `page.tsx` files, both `api/*/route.ts` files,
 `ui/Button.tsx`, `ui/Badge.tsx`, `ui/BeamBorder.tsx`, `ui/BackButton.tsx`,
 `ui/LiveSiteLink.tsx`, `lib/skill-icons.tsx`, `lib/github.ts`,
-`lib/contact.ts`, `lib/quotes.ts`, all of `content/`.
+`lib/contact.ts`, `lib/quotes.ts`, `lib/views.ts`, all of `content/`.
 
 **Client (`"use client"`):**
 `EntrySequence`, `AmbientAudio`, `Nav`, `Footer`, `Toast`, `TypeReveal`,
-`DemoCredentials`, every file in `sections/`, every file in `case-study/`,
-`lib/reduced-motion.ts`.
+`DemoCredentials`, `ViewCounter`, `sections/SetupContent`,
+`sections/PolicyContent`, every other file in `sections/`, every file in
+`case-study/`, `lib/reduced-motion.ts`.
+
+`lib/views.ts` is server-only by construction rather than by directive: it
+reads `process.env.KV_REST_API_TOKEN`, which is not `NEXT_PUBLIC_`, so it can
+only ever be called from the route handler. The client half of that feature is
+`ViewCounter`, which knows nothing but the URL `/api/views`.
 
 Two deliberate choices here:
 
@@ -422,7 +438,9 @@ One render pass instead of a cascading second one.
 
 ---
 
-## 10. The contact form
+## 10. The two API routes
+
+### /api/contact — the contact form
 
 ```
 ContactForm (client)  --POST /api/contact-->  route.ts (server)  --> Resend --> inbox
@@ -446,6 +464,50 @@ swap it for a verified domain if one ever gets set up (note that `CLAUDE.md`
 rules out a custom domain for the *site*, which is a separate question).
 
 The client never sees the key — that's the whole point of the route existing.
+
+### /api/views — the visit counter
+
+```
+ViewCounter (client)  --GET or POST /api/views-->  route.ts  --> Upstash Redis
+      ↑ counts up to the number                       ↑ holds the REST token
+```
+
+The footer's total-visit number. `lib/views.ts` talks to Upstash over its REST
+API with a plain `fetch` and a bearer token — **no client library and no new
+dependency**. The whole store is one key, `portfolio:visits`, and the write is
+`INCR`, which is atomic: two visitors landing at once can't clobber each other
+the way a read-modify-write against a blob would.
+
+Things that are deliberate:
+
+- **Either env pair works.** The Vercel Marketplace integration injects
+  `KV_REST_API_URL` / `KV_REST_API_TOKEN`; Upstash's own integration injects
+  `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`. `lib/views.ts` reads
+  the first pair and falls back to the second, so the deploy works whichever
+  way the store was attached.
+- **Unconfigured ⇒ invisible, not broken.** With neither pair set every call
+  returns `null`, the route answers `{"visits":null}`, and `ViewCounter`
+  renders an empty (but height-reserved) slot, so the footer doesn't shift.
+  Same rule as the ambient track. A hard-coded number would be an invented
+  metric, which `CLAUDE.md` forbids — no number is the correct fallback.
+- **A key that was never written is a real 0**, not a failure. Redis answers
+  `null` for a missing key; `redis()` maps that to `0` and reserves `null`
+  for genuine errors.
+- **One visit, not one page view.** `ViewCounter` gates on the `visit-counted`
+  sessionStorage key — the same idea as the entry sequence's gate. Already
+  counted ⇒ `GET`; first page of the visit ⇒ `POST`. If storage throws
+  (private mode) it assumes *counted* and sends `GET`, so the failure mode is
+  undercounting rather than counting one person on every navigation.
+- **`export const dynamic = "force-dynamic"`**, plus `cache-control: no-store`
+  on the response and `cache: "no-store"` on the fetch. A cached counter is a
+  wrong counter, at every layer.
+- **The number rolls up rather than snapping** (and snaps under reduced
+  motion). Screen readers get the settled figure from an `sr-only` span
+  instead of the ticking digits.
+
+**If you add anything that stores or counts, update `content/privacy.ts` in
+the same commit.** It names the sessionStorage keys and the third parties one
+by one, and its own header comment says as much.
 
 ---
 
@@ -490,7 +552,15 @@ gradient that scrolls away.
 ```
 RESEND_API_KEY=                   server-side, contact form
 NEXT_PUBLIC_AMBIENT_AUDIO_URL=    client-side (NEXT_PUBLIC_ = shipped to browser)
+KV_REST_API_URL=                  server-side, visit counter (Upstash Redis)
+KV_REST_API_TOKEN=                server-side, visit counter
 ```
+
+Attach the Redis store from the Vercel dashboard (Storage → Create → Upstash
+Redis) and the last two are injected into every environment for you;
+`vercel env pull .env.local` brings them down locally. All four are optional —
+leaving one unset just switches its feature off (no email, no music, no
+counter).
 
 ```bash
 npm run dev     # local
@@ -514,8 +584,17 @@ decision. Both env vars must also be set in the Vercel project settings.
   only because the early return lives in the outer `AmbientAudio` wrapper and
   all hooks live in the inner `AmbientAudioPlayer`. Don't merge the two.
 - **`getSkillIcon` returns `undefined` on purpose** for techs with no official
-  Simple Icons mark (Firecrawl, Recharts). They render as plain text; no
-  generic substitute icon.
+  brand mark (Firecrawl, Recharts, Thunder Client, Catppuccin). They render as
+  plain text; no generic substitute icon. VS Code is the one entry not from
+  Simple Icons — it comes from react-icons' `vsc` set, which carries the real
+  product mark that Simple Icons doesn't ship.
+- **`/api/views` answering `{"visits":null}` is not a bug.** That's what an
+  unconfigured or unreachable Redis store looks like, and the footer correctly
+  renders nothing. Check the env vars before debugging the route.
+- **`/gear` is reachable but unlinked.** `content/gear.ts` exports an empty
+  array, so `hasGearContent` is false and the footer omits the link; the page
+  says plainly that it isn't written yet. Filling in `GEAR_SECTIONS` is the
+  only step needed to publish it.
 - **`eslint-disable-next-line react-hooks/exhaustive-deps` in `TypeReveal`** is
   intentional and commented — callers pass an inline arrow for `onComplete`,
   which would restart the timer every render.
@@ -540,4 +619,8 @@ decision. Both env vars must also be set in the Vercel project settings.
 | Change contact details | `lib/contact.ts` (one place; nav, footer, hero, contact block all read it) |
 | Change skills / education / experience | `app/(site)/about/page.tsx` (inline consts) |
 | Change the quotes | `lib/quotes.ts` (`COVER_QUOTE` is pinned to the hero) |
+| Change the editor / extension list | `content/setup.ts` (+ `lib/skill-icons.tsx` if a new tool has a brand mark) |
+| Publish the gear page | fill `GEAR_SECTIONS` in `content/gear.ts` — the footer link appears by itself |
+| Change the privacy policy | `content/privacy.ts` (+ bump `PRIVACY_LAST_UPDATED`) |
+| Change the visit counter | `lib/views.ts` (server) + `components/ui/ViewCounter.tsx` (display) |
 | Add a page | `app/(site)/<name>/page.tsx` + a link in `Nav` and `Footer` |

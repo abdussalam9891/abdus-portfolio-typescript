@@ -6,11 +6,11 @@
  *
  * Keep this HONEST. Every claim here is checkable against the code:
  * no analytics package is installed, no cookies are set, the only browser
- * storage is the two sessionStorage keys named in section 03, and the
- * contact form's only destination is the Resend call in
- * app/api/contact/route.ts. If any of that changes, this file changes in
- * the same commit — a policy that describes a site you no longer run is
- * worse than no policy.
+ * storage is the three sessionStorage keys named in section 03, the only
+ * thing counted is the single total in lib/views.ts, and the contact
+ * form's only destination is the Resend call in app/api/contact/route.ts.
+ * If any of that changes, this file changes in the same commit — a policy
+ * that describes a site you no longer run is worse than no policy.
  */
 
 export type PolicyBlock =
@@ -55,7 +55,7 @@ export const PRIVACY_SECTIONS: PolicySection[] = [
         kind: "text",
         lead: "Usage information.",
         body:
-          "There is no analytics on this site. No Google Analytics, no tracking pixels, no advertising or session-recording scripts, and no visitor profile of any kind. The hosting provider keeps ordinary server request logs, as any web host does, and those are used only to keep the site running and secure.",
+          "There is no analytics package on this site. No Google Analytics, no tracking pixels, no advertising or session-recording scripts, and no visitor profile of any kind. The one thing counted is the total number of visits shown in the footer: arriving adds one to a single number, and that number is the entire record. Nothing about who you are, where you came from, or what you read is stored beside it — the total cannot be taken apart into individual visits, because individual visits are never written down. The hosting provider keeps ordinary server request logs, as any web host does, and those are used only to keep the site running and secure.",
       },
     ],
   },
@@ -72,6 +72,7 @@ export const PRIVACY_SECTIONS: PolicySection[] = [
         items: [
           "entry-sequence-played — records that you have already seen the opening animation, so it does not replay on every page you visit.",
           "ambient-audio-muted — records that you muted the background music, so it stays muted for the rest of your visit.",
+          "visit-counted — records that this visit has already been added to the footer's total, so reading several pages counts once rather than once per page.",
         ],
       },
       {
@@ -110,9 +111,15 @@ export const PRIVACY_SECTIONS: PolicySection[] = [
       },
       {
         kind: "text",
+        lead: "Visit count.",
+        body:
+          "The footer's total is one number held in a hosted Redis database. Your browser asks this site's own server to add one to it and to report the new figure back; your browser never contacts that database, and it receives nothing about you.",
+      },
+      {
+        kind: "text",
         lead: "Service providers.",
         body:
-          "The site runs on Vercel, and the contact form is delivered through Resend. Both process data only to perform those functions.",
+          "The site runs on Vercel, the contact form is delivered through Resend, and the visit total is stored on Upstash. Each processes data only to perform those functions.",
       },
     ],
   },
@@ -123,7 +130,8 @@ export const PRIVACY_SECTIONS: PolicySection[] = [
         kind: "list",
         items: [
           "To read and reply to messages you send through the contact form.",
-          "To remember, for the length of your visit, that you have seen the intro animation and whether you muted the sound.",
+          "To remember, for the length of your visit, that you have seen the intro animation, whether you muted the sound, and that your visit has already been counted.",
+          "To keep a single running total of visits to the site, shown in the footer.",
           "To keep the site available, diagnose technical problems, and protect it from abuse.",
         ],
       },
@@ -145,7 +153,7 @@ export const PRIVACY_SECTIONS: PolicySection[] = [
       {
         kind: "text",
         body:
-          "Contact messages arrive as email and are kept for as long as is reasonably useful to answer you and to maintain a record of the conversation, then deleted. There is no analytics data to retain, because none is collected.",
+          "Contact messages arrive as email and are kept for as long as is reasonably useful to answer you and to maintain a record of the conversation, then deleted. Beyond those there is no per-visitor data to retain, because none is collected — the footer's total is a single running number, kept indefinitely, that says nothing about any individual visit.",
       },
     ],
   },

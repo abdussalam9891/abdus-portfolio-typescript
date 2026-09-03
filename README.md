@@ -47,10 +47,28 @@ Track requirements:
 - **Seamlessly loopable.** It repeats indefinitely, so no audible seam at the
   wrap point.
 
+## Visit counter
+
+The footer shows a real total of visits, held as a single number in Upstash
+Redis and reached over its REST API (no client library, no extra dependency).
+
+Attach the store from the Vercel dashboard — **Storage → Create → Upstash
+Redis** — and `KV_REST_API_URL` / `KV_REST_API_TOKEN` are injected into every
+environment automatically; `vercel env pull .env.local` brings them down for
+local dev. Upstash's own integration sets `UPSTASH_REDIS_REST_URL` /
+`UPSTASH_REDIS_REST_TOKEN` instead, and either pair works.
+
+With neither pair set the API returns `null` and the counter renders nothing —
+the site is fine without it. Don't substitute a placeholder number.
+
 ## Project structure
 
 See `CLAUDE.md` for the full folder layout, content data shape, and animation guidelines.
 
 ## Deployment
 
-Deployed to Vercel on a `*.vercel.app` subdomain.
+Deployed to Vercel on a `*.vercel.app` subdomain, built automatically from
+`main`. All four environment variables (`RESEND_API_KEY`,
+`NEXT_PUBLIC_AMBIENT_AUDIO_URL`, `KV_REST_API_URL`, `KV_REST_API_TOKEN`) must
+be set in the Vercel project settings as well as `.env.local`; each one is
+optional, and leaving it unset simply switches its feature off.

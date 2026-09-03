@@ -29,7 +29,13 @@ Visual direction is **deliberately animation-heavy**, closer to award-site terri
       /[slug]/page.tsx          → Individual case study detail
     /about/page.tsx
     /contact/page.tsx
+    /setup/page.tsx             → Editor + extensions, rendered from /content/setup.ts
+    /gear/page.tsx              → Hardware — route exists, content deliberately empty
+    /privacy/page.tsx           → Privacy policy, rendered from /content/privacy.ts
     /layout.tsx                 → Root layout, entry animation mount point
+  /api
+    /contact/route.ts           → POST, contact form → Resend
+    /views/route.ts             → GET/POST, the footer's visit total (see "Visit counter")
 /components
   /entry
     EntrySequence.tsx           → GSAP scripted intro, session-first-load only
@@ -53,9 +59,13 @@ Visual direction is **deliberately animation-heavy**, closer to award-site terri
     gemora-storefront.ts
     gemora-dashboard.ts
   /case-studies/index.ts        → exports typed array, single source of truth for /work grid + detail pages
+  setup.ts                      → editor/extension list; exports the SetupSection type that gear.ts reuses
+  gear.ts                       → hardware list, empty until real kit is supplied; hasGearContent gates the footer link
+  privacy.ts                    → privacy policy as typed blocks + PRIVACY_LAST_UPDATED
 /lib
   motion.ts                     → shared Framer Motion variants (fadeUp, stagger, etc.) — define once, reuse everywhere, don't hand-roll variants per component
   reduced-motion.ts              → hook wrapping prefers-reduced-motion, used by EntrySequence and any GSAP timeline
+  views.ts                       → Upstash Redis REST calls behind the visit counter; server-only (no NEXT_PUBLIC_ vars)
 /public
   /images/work/{slug}/...        → screenshots per case study, optimized (see perf budget)
 ```
@@ -103,6 +113,50 @@ The site plays a looping ambient track (`components/ui/AmbientAudio.tsx`, mounte
 5. **Licensed audio only.** Royalty-free or Abdus's own. Do not add a track ripped from Spotify/YouTube/Apple Music, and do not build a player around a streaming service's content: the Spotify Web Playback SDK needs every *visitor* to log in with Premium, and Spotify embeds only give logged-out visitors a ~30s preview they must start themselves.
 6. **It stays off the critical path.** The `<audio>` element is created lazily on that first gesture, so a Lighthouse run never fetches it and the homepage perf budget above is unaffected.
 
+## Visit counter
+
+The footer shows a running total of visits (`lib/views.ts`, `app/api/views/route.ts`,
+`components/ui/ViewCounter.tsx`). It is the site's only piece of stored state.
+
+1. **It is a real count or it is nothing.** The number comes from an `INCR` on a
+   single Upstash Redis key. If the store isn't configured or is unreachable the
+   API returns `null` and the component renders an empty (height-reserved) slot.
+   Never substitute a hardcoded or seeded figure — that is an invented metric,
+   the same rule that governs case-study outcomes.
+2. **Counted once per visit, not per page view.** Gated on a `visit-counted`
+   `sessionStorage` key, the same way the entry sequence is gated. A visitor
+   reading six case studies is one visit; coming back tomorrow counts again.
+   If `sessionStorage` throws, assume already-counted — undercounting beats
+   counting one person on every navigation.
+3. **No new dependency.** Upstash is reached over its REST API with a plain
+   `fetch` and a bearer token. Don't add `@upstash/redis` or `@vercel/kv` for
+   this; there is nothing for them to do.
+4. **Two env pairs are accepted.** `KV_REST_API_URL`/`KV_REST_API_TOKEN` (Vercel
+   Marketplace) or `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` (Upstash's
+   own integration). Neither is `NEXT_PUBLIC_`, so the token never reaches the
+   browser and `lib/views.ts` can only be called from the route handler.
+5. **Nothing per-visitor is stored.** One integer, no IP, no user agent, no
+   referrer, no per-visit rows. Keep it that way: the moment the site stores
+   anything about *who* visited, it stops being a counter and starts being
+   analytics, with the disclosure obligations that follow.
+
+## Content pages: /setup, /gear, /privacy
+
+Three content-driven pages, each rendered from a typed object in `/content` in
+the same spirit as the case studies — data, not JSX scattered through a page.
+
+- **`/gear` ships unlinked on purpose.** `content/gear.ts` exports an empty
+  `GEAR_SECTIONS`; `hasGearContent` is what keeps it out of the footer, and the
+  page says plainly that it isn't written yet. Do not populate it with invented
+  hardware — fill it in when the real kit is supplied and the link appears by
+  itself.
+- **`content/privacy.ts` must stay true.** Every claim in it is checkable
+  against the code: the sessionStorage keys it lists, the third parties it
+  names, the statement that no analytics package is installed. **Anything that
+  stores, counts, or sends data changes that file in the same commit**, and
+  bumps `PRIVACY_LAST_UPDATED`. A policy describing a site you no longer run is
+  worse than no policy.
+
 ## Coding conventions
 
 - Components are function components, named exports, colocated types
@@ -124,4 +178,7 @@ The site plays a looping ambient track (`components/ui/AmbientAudio.tsx`, mounte
 - Don't invent client testimonials, logos, or metrics not provided in `/content`
 - Don't reach for Three.js/WebGL even if it would look cool — out of scope, agreed with client
 - Don't commit an audio file to `/public`, or add music sourced from a streaming service — see "Background audio"
+- Don't seed, fake, or hardcode the visit counter, and don't add analytics, tracking pixels or per-visitor logging — see "Visit counter"
+- Don't change what the site stores or sends without updating `content/privacy.ts` in the same commit
+- Don't fill `content/gear.ts` with hardware Abdus doesn't own just to make the page look finished
 - Don't let the entry sequence become a second contact-info gate — contact (WhatsApp/phone/email) must be reachable within one click from any page, animation or not
