@@ -8,6 +8,7 @@ import {
   useSyncExternalStore,
 } from "react";
 
+import { AMBIENT_TRACK_SRC } from "@/lib/ambient-audio";
 import {
   getMutedServerSnapshot,
   getMutedSnapshot,
@@ -47,8 +48,6 @@ import {
  * visitor who muted is not re-muted on every page they open.
  */
 
-const TRACK_SRC = process.env.NEXT_PUBLIC_AMBIENT_AUDIO_URL;
-
 // Loud enough to be present under the page, quiet enough that a client
 // taking a call with the site open isn't ambushed.
 const VOLUME = 0.32;
@@ -67,9 +66,10 @@ const LABELS: Record<Status, string> = {
 
 export function AmbientAudio() {
   // Inlined at build time, so with no track configured the player never
-  // reaches the browser at all.
-  if (!TRACK_SRC) return null;
-  return <AmbientAudioPlayer src={TRACK_SRC} />;
+  // reaches the browser at all — and neither does the footer's clearance
+  // for it (lib/ambient-audio.ts).
+  if (!AMBIENT_TRACK_SRC) return null;
+  return <AmbientAudioPlayer src={AMBIENT_TRACK_SRC} />;
 }
 
 function AmbientAudioPlayer({ src }: { src: string }) {

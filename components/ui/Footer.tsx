@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { TypeReveal } from "@/components/ui/TypeReveal";
 import { useReducedMotion } from "@/lib/reduced-motion";
 import { fadeUp, typeDurationMs } from "@/lib/motion";
+import { AMBIENT_DOCK_CLEARANCE, hasAmbientTrack } from "@/lib/ambient-audio";
 import { CONTACT } from "@/lib/contact";
 import { QUOTES, type Quote } from "@/lib/quotes";
 
@@ -31,7 +32,14 @@ export function Footer() {
 
   return (
     <motion.footer
-      className="mt-auto border-t border-accent/15 px-6 md:px-10 py-12 text-center"
+      // The music toggle is fixed to the bottom-left corner, and the footer
+      // is the one thing on the page that ends up underneath it: scrolled to
+      // the end, the credit line sits exactly where the dock floats. Reserve
+      // its height here rather than moving the control — the control has to
+      // stay reachable from every page (CLAUDE.md).
+      className={`mt-auto border-t border-accent/15 px-6 md:px-10 pt-12 text-center ${
+        hasAmbientTrack ? AMBIENT_DOCK_CLEARANCE : "pb-12"
+      }`}
       initial={reduced ? "visible" : "hidden"}
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
