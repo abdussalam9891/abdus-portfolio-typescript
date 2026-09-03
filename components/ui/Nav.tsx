@@ -19,6 +19,7 @@ export function Nav() {
   const reduced = useReducedMotion();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [homeHintOpen, setHomeHintOpen] = useState(false);
 
   // Close the mobile menu on route change (e.g. back/forward navigation).
   // Adjusting state during render (rather than in an effect) avoids an
@@ -65,23 +66,44 @@ export function Nav() {
             )}
           </AnimatePresence>
 
-          <Link
-            href="/"
-            className="group flex items-center gap-2 font-semibold tracking-tight"
+          {/* Wordmark. Hovering (or focusing) it drops a small "Home" label
+              underneath, so the destination is named rather than assumed. */}
+          <div
+            className="relative"
+            onMouseEnter={() => setHomeHintOpen(true)}
+            onMouseLeave={() => setHomeHintOpen(false)}
+            onFocus={() => setHomeHintOpen(true)}
+            onBlur={() => setHomeHintOpen(false)}
           >
-            {/* Small green pulse next to the wordmark — the site's one piece
-                of always-on ambient motion outside the hero. */}
-            <span
-              aria-hidden="true"
-              className="relative flex size-2 shrink-0"
+            <Link
+              href="/"
+              className="group flex items-center font-semibold tracking-tight"
             >
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-accent-bright" />
-            </span>
-            <span className="transition-colors duration-300 group-hover:text-accent-bright">
-              Abdus
-            </span>
-          </Link>
+              <span className="transition-colors duration-300 group-hover:text-accent-bright">
+                Abdus
+              </span>
+            </Link>
+
+            <AnimatePresence initial={false}>
+              {homeHintOpen && (
+                <motion.div
+                  key="home-hint"
+                  initial={reduced ? { opacity: 1 } : { opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduced ? { opacity: 0 } : { opacity: 0, y: -6 }}
+                  transition={{ duration: reduced ? 0.01 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute left-0 top-full z-50 pt-2"
+                >
+                  <Link
+                    href="/"
+                    className="block rounded-md border border-accent/25 bg-background/95 px-3 py-1.5 text-xs text-foreground/70 shadow-lg shadow-black/30 backdrop-blur transition-colors duration-300 hover:border-accent/50 hover:text-accent-bright"
+                  >
+                    Home
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Desktop links */}
